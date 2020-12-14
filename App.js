@@ -30,7 +30,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    loadBusStopData();
+    const interval = setInterval(loadBusStopData, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -38,6 +39,9 @@ export default function App() {
       <Text style={styles.header}>Bus arrival times:</Text>
       <Text style={styles.time}>
         {loading ? <ActivityIndicator size="large" color="blue" /> : arrival}{" "}
+      </Text>
+      <Text style={styles.header}>
+
       </Text>
       <TouchableOpacity onPress={null} style={styles.button}>
         <Text style={styles.buttonText}>Refresh</Text>
