@@ -10,9 +10,18 @@ import {
 
 const BUSSTOP_URL = "https://arrivelah2.busrouter.sg/?id=09048";
 
+
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [arrival, setArrival] = useState("");
+  const [duration, setDuration] = useState("");
+
+  function dateConvert(time) {
+    const event = new Date(time);
+const newEvent = event.toLocaleTimeString('en-US');
+return newEvent
+  }
+
 
   function loadBusStopData() {
     setLoading(true);
@@ -24,26 +33,27 @@ export default function App() {
           (item) => item.no === "106"
         )[0];
         console.log(myBus);
-        setArrival(myBus.next.time);
+        setArrival(dateConvert(myBus.next.time));
+        setDuration(Math.round((myBus.next.duration_ms)/1000));
         setLoading(false);
       });
   }
 
   useEffect(() => {
-    const interval = setInterval(loadBusStopData, 10000);
+    const interval = setInterval(loadBusStopData, 30000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Bus arrival times:</Text>
+      <Text style={styles.header}>Bus arrival time:</Text>
       <Text style={styles.time}>
         {loading ? <ActivityIndicator size="large" color="blue" /> : arrival}{" "}
       </Text>
       <Text style={styles.header}>
-
+Waiting time in seconds: {duration}
       </Text>
-      <TouchableOpacity onPress={null} style={styles.button}>
+      <TouchableOpacity onPress={loadBusStopData} style={styles.button}>
         <Text style={styles.buttonText}>Refresh</Text>
       </TouchableOpacity>
     </View>
